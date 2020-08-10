@@ -8,15 +8,16 @@ using System.Windows.Forms;
 
 namespace CmdLauncher
 {
-	public enum FILETYPES
-	{
-		CMD = 0,
-		BAT = 1,
-		PS = 2
-	}
+	//public enum FILETYPES
+	//{
+	//	CMD = 0,
+	//	BAT = 1,
+	//	PS = 2
+	//}
 	public partial class MainForm1 : Form
 	{
-		private string[] _thesefiles = { "*.cmd", "*.bat", "*.ps" };
+		private string[] _thesefiles;
+		private string[] _exefiles;
 		private int _maxparams = 10;
 		private string thistxtboxname = "tbparam";
 		private int borderv;
@@ -26,8 +27,50 @@ namespace CmdLauncher
 		public MainForm1()
 		{
 			InitializeComponent();
+			InitArrays();
 		}
-
+		public string ReadAny(string readthis)
+		{
+			string foundthis = string.Empty;
+			foundthis = System.Configuration.ConfigurationManager.AppSettings[readthis];
+			if (string.IsNullOrEmpty(foundthis)) { foundthis = string.Empty; }
+			return foundthis;
+		}
+		private void InitArrays()
+		{
+			int howmany;
+			string tmphowmany;
+			tmphowmany = ReadAny("howmanyfileext");
+			if (int.TryParse(tmphowmany, out howmany))
+			{
+				_thesefiles = new string[howmany];
+			}
+			tmphowmany = ReadAny("howmanyfileexe");
+			if (int.TryParse(tmphowmany, out howmany))
+			{
+				_exefiles = new string[howmany];
+			}
+			if ((_thesefiles == null) || (_exefiles == null))
+			{
+				_thesefiles = new string[] { "*.cmd", "*.bat", "*.ps1", "*.ps2" };
+				_exefiles = new string[]  {
+					"C:\\WINDOWS\\SYSTEM32\\CMD.EXE",
+					 "C:\\WINDOWS\\SYSTEM32\\CMD.EXE",
+					 "C:\\WINDOWS\\SYSTEM32\\WINDOWSPOWERSHELL\\V1.0\\POWERSHELL.EXE",
+					 "C:\\WINDOWS\\SYSTEM32\\WINDOWSPOWERSHELL\\V1.0\\POWERSHELL.EXE"  };
+			}
+			else
+			{
+				_thesefiles[0] = ReadAny("cmd_file_ext");
+				_thesefiles[1] = ReadAny("bat_file_ext");
+				_thesefiles[2] = ReadAny("ps1_file_ext");
+				_thesefiles[3] = ReadAny("ps2_file_ext");
+				_exefiles[0] = ReadAny("cmd_file_exe");
+				_exefiles[1] = ReadAny("bat_file_exe");
+				_exefiles[2] = ReadAny("ps1_file_exe");
+				_exefiles[3] = ReadAny("ps2_file_exe");
+			}
+		}
 		#region system
 		private void MainForm1_Load(object sender, EventArgs e)
 		{
@@ -53,7 +96,7 @@ namespace CmdLauncher
 			UD_parameters.Left = lbl_parameters.Left;
 			lb_filetypes.Left = UD_parameters.Left + UD_parameters.Width + borderh;
 			lb_filetypes.Top = lbl_parameters.Top;
-			theseboxes = GetParameters().ToArray();
+			theseboxes = Get_Parameters().ToArray();
 			if (theseboxes != null)
 			{
 				foreach (System.Windows.Forms.TextBox tb in theseboxes)
@@ -128,6 +171,63 @@ namespace CmdLauncher
 			}
 		}
 
+		private void btnLaunch_Click(object sender, EventArgs e)
+		{
+			switch (lb_filetypes.SelectedIndex)
+			{
+				case (0):
+					{
+						if (cb_WithOptions.Checked)
+						{
+							Launch_CMD(true, 0);
+						}
+						else
+						{
+							Launch_CMD(false, 0);
+						}
+						break;
+					}
+				case (1):
+					{
+						if (cb_WithOptions.Checked)
+						{
+							Launch_CMD(true, 1);
+						}
+						else
+						{
+							Launch_CMD(false, 1);
+						}
+						break;
+					}
+				case (2):
+					{
+						if (cb_WithOptions.Checked)
+						{
+							Launch_PS(true, 2);
+						}
+						else
+						{
+							Launch_PS(false, 2);
+						}
+						break;
+					}
+				default:
+					{
+						if (cb_WithOptions.Checked)
+						{
+							Launch_PS(true, 2);
+						}
+						else
+						{
+							Launch_PS(false, 2);
+						}
+						break;
+					}
+
+			}
+
+		}
+
 		private bool SelectFolder(object sender, EventArgs e)
 		{
 			bool retval = false;
@@ -176,7 +276,7 @@ namespace CmdLauncher
 			}
 		}
 
-		private System.Collections.Generic.List<System.Windows.Forms.TextBox> GetParameters()
+		private System.Collections.Generic.List<System.Windows.Forms.TextBox> Get_Parameters()
 		{
 			System.Collections.Generic.List<System.Windows.Forms.TextBox> theseboxes = new System.Collections.Generic.List<System.Windows.Forms.TextBox>();
 			string txtname;
@@ -219,7 +319,7 @@ namespace CmdLauncher
 					tb = null;
 				}
 			}
-			theseboxes = GetParameters();
+			theseboxes = Get_Parameters();
 			if (theseboxes != null)
 			{
 				for (int ii = 9; ii > thisvalue - 1; ii--)
@@ -238,36 +338,109 @@ namespace CmdLauncher
 
 			}
 		}
-
-		private void btnLaunch_Click(object sender, EventArgs e)
+		private bool Launch_PS(bool do_options, int filetype)
 		{
-			string filename;
+			string filename, thisfilename;
+			bool retval = false;
+			string options = System.String.Empty;
 			string parameters = System.String.Empty;
 			System.Collections.Generic.List<System.Windows.Forms.TextBox> theseboxes;
-			System.Diagnostics.Process newproc;
 			if (lb_files.SelectedIndex >= 0)
 			{
-				filename = (txtSrcFolder.Text.EndsWith("\\") ? txtSrcFolder.Text : txtSrcFolder.Text + "\\") + lb_files.SelectedItem.ToString();
+				filename = _exefiles[filetype];
+				thisfilename = (txtSrcFolder.Text.EndsWith("\\") ? txtSrcFolder.Text : txtSrcFolder.Text + "\\") + lb_files.SelectedItem.ToString();
 				if (!System.String.IsNullOrEmpty(filename))
 				{
 					if (System.IO.File.Exists(filename))
 					{
-						theseboxes = GetParameters();
+						if (do_options)
+						{
+							options = GetCMD_Options();
+						}
+						theseboxes = Get_Parameters();
 						foreach (System.Windows.Forms.TextBox tb in theseboxes)
 						{
 							//parameters += " \"" + tb.Text + "\"";
 							parameters += " " + tb.Text;
 						}
-						newproc = new System.Diagnostics.Process();
-						newproc.StartInfo.FileName = filename;
-						newproc.StartInfo.Arguments = parameters;
-						newproc.StartInfo.WorkingDirectory = txtStartFolder.Text;
-						newproc.Start();
-					}
+						System.Diagnostics.Process newproc;
+						//newproc = new System.Diagnostics.Process();
+						System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+						psi.FileName = filename;
+						psi.UseShellExecute = false;
+						psi.Arguments = options + " " + thisfilename + " " + parameters;
+						psi.WorkingDirectory = txtStartFolder.Text;
 
+						//newproc = System.Diagnostics.Process.Start(filename, options);
+						newproc = System.Diagnostics.Process.Start(psi);
+						if (newproc != null)
+						{
+							retval = true;
+
+						}
+					}
 				}
 			}
+			return retval;
 		}
 
+		private bool Launch_CMD(bool do_options, int filetype)
+		{
+			string filename, thisfilename;
+			bool retval = false;
+			string options = System.String.Empty;
+			string parameters = System.String.Empty;
+			System.Collections.Generic.List<System.Windows.Forms.TextBox> theseboxes;
+			if (lb_files.SelectedIndex >= 0)
+			{
+				filename = _exefiles[filetype];
+				thisfilename = (txtSrcFolder.Text.EndsWith("\\") ? txtSrcFolder.Text : txtSrcFolder.Text + "\\") + lb_files.SelectedItem.ToString();
+				if (!System.String.IsNullOrEmpty(filename))
+				{
+					if (System.IO.File.Exists(filename))
+					{
+						if (do_options)
+						{
+							options = GetCMD_Options();
+						}
+						theseboxes = Get_Parameters();
+						foreach (System.Windows.Forms.TextBox tb in theseboxes)
+						{
+							//parameters += " \"" + tb.Text + "\"";
+							parameters += " " + tb.Text;
+						}
+						System.Diagnostics.Process newproc;
+						//newproc = new System.Diagnostics.Process();
+						System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+						psi.FileName = filename;
+						psi.UseShellExecute = false;
+						psi.Arguments = options + " " + thisfilename + " " + parameters;
+						psi.WorkingDirectory = txtStartFolder.Text;
+
+						//newproc = System.Diagnostics.Process.Start(filename, options);
+						newproc = System.Diagnostics.Process.Start(psi);
+						if (newproc != null)
+						{
+							retval = true;
+
+						}
+					}
+				}
+			}
+			return retval;
+		}
+		private string GetCMD_Options()
+		{
+			string options = System.String.Empty;
+			CmdLauncher.OptionsForm1 frm2 = new CmdLauncher.OptionsForm1();
+			if (frm2.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				options = frm2.Options;
+				frm2.Dispose();
+				frm2 = null;
+
+			}
+			return options;
+		}
 	}
 }

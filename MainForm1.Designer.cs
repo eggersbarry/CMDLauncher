@@ -38,6 +38,7 @@
 			this.UD_parameters = new System.Windows.Forms.NumericUpDown();
 			this.lbl_parameters = new System.Windows.Forms.Label();
 			this.lb_filetypes = new System.Windows.Forms.ListBox();
+			this.cb_WithOptions = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.UD_parameters)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -105,13 +106,13 @@
 			this.lb_files.ItemHeight = 18;
 			this.lb_files.Location = new System.Drawing.Point(18, 93);
 			this.lb_files.Name = "lb_files";
-			this.lb_files.Size = new System.Drawing.Size(344, 472);
+			this.lb_files.Size = new System.Drawing.Size(344, 274);
 			this.lb_files.TabIndex = 5;
 			// 
 			// btnLaunch
 			// 
 			this.btnLaunch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.btnLaunch.Location = new System.Drawing.Point(15, 584);
+			this.btnLaunch.Location = new System.Drawing.Point(15, 388);
 			this.btnLaunch.Name = "btnLaunch";
 			this.btnLaunch.Size = new System.Drawing.Size(84, 26);
 			this.btnLaunch.TabIndex = 9;
@@ -122,7 +123,7 @@
 			// btnExit
 			// 
 			this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnExit.Location = new System.Drawing.Point(636, 584);
+			this.btnExit.Location = new System.Drawing.Point(636, 388);
 			this.btnExit.Name = "btnExit";
 			this.btnExit.Size = new System.Drawing.Size(84, 26);
 			this.btnExit.TabIndex = 10;
@@ -164,12 +165,23 @@
 			this.lb_filetypes.TabIndex = 8;
 			this.lb_filetypes.SelectedIndexChanged += new System.EventHandler(this.lb_filetypes_SelectedIndexChanged);
 			// 
+			// cb_WithOptions
+			// 
+			this.cb_WithOptions.AutoSize = true;
+			this.cb_WithOptions.Location = new System.Drawing.Point(138, 388);
+			this.cb_WithOptions.Name = "cb_WithOptions";
+			this.cb_WithOptions.Size = new System.Drawing.Size(122, 22);
+			this.cb_WithOptions.TabIndex = 11;
+			this.cb_WithOptions.Text = "With Options";
+			this.cb_WithOptions.UseVisualStyleBackColor = true;
+			// 
 			// MainForm1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.ControlDark;
-			this.ClientSize = new System.Drawing.Size(734, 623);
+			this.ClientSize = new System.Drawing.Size(734, 427);
+			this.Controls.Add(this.cb_WithOptions);
 			this.Controls.Add(this.lb_filetypes);
 			this.Controls.Add(this.lbl_parameters);
 			this.Controls.Add(this.UD_parameters);
@@ -204,6 +216,7 @@
 		private System.Windows.Forms.NumericUpDown UD_parameters;
 		private System.Windows.Forms.Label lbl_parameters;
 		private System.Windows.Forms.ListBox lb_filetypes;
+		private System.Windows.Forms.CheckBox cb_WithOptions;
 	}
 }
 
