@@ -311,6 +311,11 @@ namespace CmdLauncher
 				rect.Y += (rect.Height + borderv);
 				if (!this.Controls.ContainsKey(tb.Name))
 				{
+					tb.AllowDrop = true;
+					tb.DragDrop += new DragEventHandler(txtbox_DragDrop);
+					tb.DragEnter += new DragEventHandler(txtbox_DragEnter);
+					tb.DragOver += new DragEventHandler(txtbox_DragOver);
+					tb.DragLeave += new EventHandler(txtbox_DragLeave);
 					this.Controls.Add(tb);
 				}
 				else
