@@ -39,6 +39,7 @@
 			this.lbl_parameters = new System.Windows.Forms.Label();
 			this.lb_filetypes = new System.Windows.Forms.ListBox();
 			this.cb_WithOptions = new System.Windows.Forms.CheckBox();
+			this.btnEdit = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.UD_parameters)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -175,12 +176,24 @@
 			this.cb_WithOptions.Text = "With Options";
 			this.cb_WithOptions.UseVisualStyleBackColor = true;
 			// 
+			// btnEdit
+			// 
+			this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.btnEdit.Location = new System.Drawing.Point(374, 341);
+			this.btnEdit.Name = "btnEdit";
+			this.btnEdit.Size = new System.Drawing.Size(84, 26);
+			this.btnEdit.TabIndex = 12;
+			this.btnEdit.Text = "&Edit";
+			this.btnEdit.UseVisualStyleBackColor = true;
+			this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
+			// 
 			// MainForm1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.ControlDark;
 			this.ClientSize = new System.Drawing.Size(734, 427);
+			this.Controls.Add(this.btnEdit);
 			this.Controls.Add(this.cb_WithOptions);
 			this.Controls.Add(this.lb_filetypes);
 			this.Controls.Add(this.lbl_parameters);
@@ -217,6 +230,7 @@
 		private System.Windows.Forms.Label lbl_parameters;
 		private System.Windows.Forms.ListBox lb_filetypes;
 		private System.Windows.Forms.CheckBox cb_WithOptions;
+		private System.Windows.Forms.Button btnEdit;
 	}
 }
 

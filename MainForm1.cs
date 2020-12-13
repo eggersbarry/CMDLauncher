@@ -268,6 +268,45 @@ namespace CmdLauncher
 			}
 			return retval;
 		}
+		private void btnEdit_Click(object sender, EventArgs e)
+		{
+			if (lb_files.SelectedIndex < 0)
+			{
+				System.String msg = "No file Selected.  Please Select one.";
+				System.Windows.Forms.MessageBox.Show(msg);
+				return;
+			}
+			System.Diagnostics.Process newproc = new System.Diagnostics.Process();
+			System.Diagnostics.ProcessStartInfo newstart = new System.Diagnostics.ProcessStartInfo();
+			System.String newstr;
+			if (txtSrcFolder.Text.EndsWith(Path.DirectorySeparatorChar.ToString()))
+			{
+				newstr = txtSrcFolder.Text;
+			}
+			else
+			{
+				newstr = txtSrcFolder.Text + Path.DirectorySeparatorChar.ToString();
+			}
+			newstart.Verb = "Edit";
+			newstart.FileName = newstr + lb_files.SelectedItem.ToString(); ;
+			newproc.StartInfo = newstart;
+
+			if (newproc.Start() == false)
+			{
+				System.String editorname;
+				editorname = System.Configuration.ConfigurationManager.AppSettings["editorname"];
+
+				newstart.FileName = editorname;
+				newstart.Arguments = newstr + lb_files.SelectedItem.ToString();
+				newstart.Verb = "";
+				newproc.StartInfo = newstart;
+				if (newproc.Start() == false)
+				{
+					//or use this
+					System.Diagnostics.Process.Start(editorname, newstr + lb_files.SelectedItem.ToString());
+				}
+			}
+		}
 		private void txtSrcFolder_TextChanged(object sender, EventArgs e)
 		{
 			if (!FillFileList(txtSrcFolder, lb_files))
@@ -447,5 +486,7 @@ namespace CmdLauncher
 			}
 			return options;
 		}
+
+
 	}
 }
